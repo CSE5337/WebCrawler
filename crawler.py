@@ -224,6 +224,13 @@ class Crawler:
 
         return is_duplicate
 
+    def clean_urls(self):
+        self.visited_urls = set(self.add_root_to_links(self.visited_urls))
+        self.image_urls = self.add_root_to_links(self.image_urls)
+        self.excel_urls = self.add_root_to_links(self.excel_urls)
+        self.broken_urls = self.add_root_to_links(self.broken_urls)
+        self.external_urls = self.clean_external_links(self.external_urls)
+
     @staticmethod
     def strip_tags(html):
         """
@@ -517,18 +524,11 @@ class Crawler:
             else:
                 print "... restricted"
 
-
-
-
             # end if
         # end while
 
         # clean the links for visual appearance
-        self.visited_urls = set(self.add_root_to_links(self.visited_urls))
-        self.image_urls = self.add_root_to_links(self.image_urls)
-        self.excel_urls = self.add_root_to_links(self.excel_urls)
-        self.broken_urls = self.add_root_to_links(self.broken_urls)
-        self.external_urls = self.clean_external_links(self.external_urls)
+        self.clean_urls()
 
         # write to output file
         self.write_output()
