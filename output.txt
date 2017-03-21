@@ -1,7 +1,7 @@
 Output of Preston and Arturo's web crawler.
 
 Current Time: 
-    2017-03-21 17:46:00
+    2017-03-21 18:03:47
 
 Visited Links: (11 total)
     http://lyle.smu.edu/~fmoore/index_duplicate.htm
