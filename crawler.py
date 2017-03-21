@@ -37,7 +37,6 @@ class Crawler:
         self.p = PorterStemmer()
         self.all_words = {}
         self.all_words_freq = {}
-        self.tfidf = {}
         self.vocabulary = []
         self.doc_term_matrix = [[0] * 23 for n in range(809)]
         self.docs = {}
