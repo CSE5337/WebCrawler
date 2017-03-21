@@ -1,0 +1,67 @@
+Output of Preston and Arturo's web crawler.
+
+Current Time: 
+    2017-03-21 17:46:00
+
+Visited Links: (11 total)
+    http://lyle.smu.edu/~fmoore/index_duplicate.htm
+    http://lyle.smu.edu/~fmoore/misc/porter_stemmer_example.html
+    http://lyle.smu.edu/~fmoore/index.htm
+    http://lyle.smu.edu/~fmoore/misc/levenshtein.html
+    http://lyle.smu.edu/~fmoore/index.html
+    http://lyle.smu.edu/~fmoore/misc/urlexample1.htm
+    http://lyle.smu.edu/~fmoore/misc/exam1.html
+    http://lyle.smu.edu/~fmoore/misc/excel-examples.html
+    http://lyle.smu.edu/~fmoore/misc/count_letters_duplicate.txt
+    http://lyle.smu.edu/~fmoore/schedule.htm
+    http://lyle.smu.edu/~fmoore/misc/count_letters.txt
+
+External Links: (12 total)
+    mailto:fmoore@lyle.smu.edu
+    https://smu.instructure.com
+    does_not_exist.htm
+    http://www.gedpage.com/soundex.html
+    http://www.smu.edu/EnrollmentServices/Registrar/Enrollment/FinalExamSchedule/Spring2017
+    http://tartarus.org/~martin/PorterStemmer/
+    http://en.wikipedia.org/wiki/Document_classification
+    http://en.wikipedia.org/wiki/Stop_words
+    http://en.wikipedia.org/wiki/Tf*idf
+    http://lucene.apache.org/core/
+    http://search.carrot2.org/stable/search
+    http://9ol.es/porter_js_demo.html
+
+Image Links: (4 total)
+    http://lyle.smu.edu/~fmoore/SMU-CSE-LOGO.gif
+    http://lyle.smu.edu/~fmoore/misc/google-and-or-example.jpg
+    http://lyle.smu.edu/~fmoore/misc/permutermindex-example.jpg
+    http://lyle.smu.edu/~fmoore/excel-icon.jpg
+
+Excel Links: (3 total)
+    http://lyle.smu.edu/~fmoore/misc/example-2017-03-02.xlsx
+    http://lyle.smu.edu/~fmoore/page113.xlsx
+    http://lyle.smu.edu/~fmoore/page113-ex2.xlsx
+
+Broken Links: (1 total)
+    http://lyle.smu.edu/~fmoore/this_aint_gonna_work.htm
+
+Top 20 Most Common Words with Document Frequency:
+    The term 1 occurs 17 times in 4 documents.
+    The term chpt occurs 14 times in 1 documents.
+    The term exampl occurs 12 times in 4 documents.
+    The term and occurs 11 times in 5 documents.
+    The term hmwk occurs 10 times in 1 documents.
+    The term 2 occurs 10 times in 3 documents.
+    The term j occurs 10 times in 1 documents.
+    The term stem occurs 9 times in 1 documents.
+    The term 0 occurs 8 times in 2 documents.
+    The term 2017 occurs 8 times in 4 documents.
+    The term cse occurs 7 times in 4 documents.
+    The term assign occurs 7 times in 1 documents.
+    The term distanc occurs 7 times in 3 documents.
+    The term due occurs 7 times in 1 documents.
+    The term var occurs 7 times in 2 documents.
+    The term file occurs 7 times in 3 documents.
+    The term 3 occurs 6 times in 3 documents.
+    The term 4 occurs 6 times in 2 documents.
+    The term spring occurs 6 times in 3 documents.
+    The term mai occurs 5 times in 2 documents.
