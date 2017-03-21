@@ -545,7 +545,7 @@ if __name__ == "__main__":
     # Load in stopwords
     crawler.load_stop_words('stopwords.txt')
 
-    # Crawl N amount of pages or 100 pages
+    # Crawl N amount of pages or 1000 pages
     if len(sys.argv) == 2:
         crawler.crawl(sys.argv[1])
     else:
