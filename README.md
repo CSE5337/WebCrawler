@@ -19,6 +19,6 @@ git clone https://github.com/CSE5337/WebCrawler.git
 
 ## Dependencies
 
-### Python 2.7
+* Python 2.7
 
-### Python packages: numpy, HTMLParser, requests, BeautifulSoup, PorterStemmer
+* Python packages: numpy, HTMLParser, requests, BeautifulSoup, PorterStemmer
