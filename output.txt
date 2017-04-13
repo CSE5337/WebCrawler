@@ -1,7 +1,7 @@
 Output of Preston and Arturo's web crawler.
 
 Current Time: 
-    2017-04-13 01:32:22
+    2017-04-13 01:40:35
 
 Visited Links: (13 total)
     index.html (Freeman Moore - SMU Spring 2017)
@@ -45,7 +45,7 @@ Broken Links: (2 total)
     does_not_exist.htm
     this_aint_gonna_work.htm
 
-Top 20 Most Common Words with Document Frequency:
+Top 20 Most Common Stemmed Words with Document Frequency:
     The term de occurs 24 times in 1 documents.
     The term 1 occurs 17 times in 4 documents.
     The term un occurs 17 times in 1 documents.

@@ -142,7 +142,7 @@ class Crawler:
         f.write('\n')
 
         # Term Frequency
-        f.write('Top 20 Most Common Words with Document Frequency:\n')
+        f.write('Top 20 Most Common Stemmed Words with Document Frequency:\n')
         for i in dictionary:
             f.write('    The term ' + i[0] + ' occurs ' + str(i[1][1]) + ' times in ' + str(i[1][0]) + ' documents.\n')
 
