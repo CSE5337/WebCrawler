@@ -1,11 +1,11 @@
-import requests, robotparser, re, os, string, sys
+import requests, robotparser, urlparse, re, os, string, sys, operator, numpy
 from bs4 import BeautifulSoup
 from HTMLParser import HTMLParser
 from time import localtime, strftime
 from stemmer import PorterStemmer
 from collections import Counter
+from math import log10
 import hashlib
-from urlparse import urljoin
 
 ROOT_URL = 'http://lyle.smu.edu/~fmoore/'
 
@@ -13,6 +13,7 @@ ROOT_URL = 'http://lyle.smu.edu/~fmoore/'
 class MLStripper(HTMLParser):
     """
     This class removes the HTML tags from raw HTML text.
+    http://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
     """
     def __init__(self):
         HTMLParser.__init__(self)
@@ -28,6 +29,10 @@ class MLStripper(HTMLParser):
 
 class Crawler:
     def __init__(self):
+    	"""
+    	This method declares the list stopwords, dictionaries all_words and
+    	all_words_freq, as well as the PorterStemmer object.
+    	"""
         self.stopwords = []
         self.p = PorterStemmer()
         self.all_words = {}
@@ -38,9 +43,9 @@ class Crawler:
         self.parser = robotparser.RobotFileParser()
 
         self.visited_urls = []
-        self.visited_items = []
         self.external_urls = []
         self.image_urls = []
+        self.excel_urls = []
         self.broken_urls = []
         self.duplicate_md5_map = {}
 
@@ -48,20 +53,43 @@ class Crawler:
         """
         This method will fetch the contents of the page.
         """
-        r = requests.get(url)
+        r = requests.get(urlparse.urljoin(ROOT_URL, self.clean_url(url)))
         return r.text
 
     def external_link(self, url):
         """
         This method will check if the URL is an external link outside the root domain
         """
-        return not ROOT_URL in url
+        if url:
+            url = re.compile('https*://').sub('', url)
+            if re.compile('.*lyle.smu.edu/~fmoore.*').match(url):
+                return False
+            elif re.compile('www.*').match(url):
+                return True
+            elif re.compile('java-source.*').match(url):
+                return True
+            elif re.compile('.*smu.edu.*').match(url):
+                return True
+            elif re.compile('.*.aspx').match(url):
+                return True
+            elif re.compile('mailto:').match(url):
+                return True
+            elif re.compile('.*.xlsx').match(url):
+                return False
+            elif requests.get(ROOT_URL + url).status_code == 200:
+                return False
+            elif self.image_link(url):
+                return False
+            else:
+                return True
+        else:
+            return True
 
     def broken_link(self, url):
         """
         This method will check if the link is broken.
         """
-        return False if requests.get(url).status_code == 200 else True
+        return False if requests.get(ROOT_URL + self.clean_url(url)).status_code == 200 else True
 
     def load_stop_words(self, file_name):
         """
@@ -95,7 +123,7 @@ class Crawler:
                 self.all_words[key] = [(url, doc_words[key])]
                 self.all_words_freq[key] = [1, doc_words[key]]
                 self.vocabulary.append(key)
-                self.doc_term_matrix[self.vocabulary.index(key)][self.docs[url]] = \
+                self.doc_term_matrix[self.vocabulary.index(key)][self.docs[self.add_root_if_not_there(url)]] = \
                     self.all_words[key][0][1]
             else:
                 self.all_words[key].append((url, doc_words[key]))
@@ -103,7 +131,19 @@ class Crawler:
                 self.all_words_freq[key][1] += doc_words[key]
                 for tup in self.all_words[key]:
                     if tup[0] == str(url):
-                        self.doc_term_matrix[self.vocabulary.index(key)][self.docs[url]] = tup[1]
+                        self.doc_term_matrix[self.vocabulary.index(key)][self.docs[self.add_root_if_not_there(url)]] = tup[1]
+
+    def calculate_tfidf(self, word):
+        """
+        This method will calculate the TF-IDF for a given word.
+
+        1 + log(number of times word appears in a document) * log(total documents/ how many documents the word appears in)
+        """
+        if word in self.all_words:
+            for i in self.all_words[word]:
+                return (1 + log10(i[1])) * log10(len(self.visited_urls)/self.all_words_freq[word][0])
+        else:
+            return 0
 
     def write_output(self):
         """
@@ -119,26 +159,32 @@ class Crawler:
 
         # Visited links
         f.write('Visited Links: (' + str(len(self.visited_urls)) + ' total)\n')
-        for item in self.visited_items:
-            f.write("    " + self.clean_url(item['link']) + ' (' + item['title'] + ')\n')
+        for link in self.visited_urls:
+            f.write("    " + link + '\n')
         f.write('\n')
 
         # External links
         f.write('External Links: (' + str(len(self.external_urls)) + ' total)\n')
         for link in self.external_urls:
-            f.write("    " + self.clean_url(link) + '\n')
+            f.write("    " + link + '\n')
         f.write('\n')
 
         # Image links
         f.write('Image Links: (' + str(len(self.image_urls)) + ' total)\n')
         for link in self.image_urls:
-            f.write("    " + self.clean_url(link) + '\n')
+            f.write("    " + link + '\n')
+        f.write('\n')
+
+        # Excel links
+        f.write('Excel Links: (' + str(len(self.excel_urls)) + ' total)\n')
+        for link in self.excel_urls:
+            f.write("    " + link + '\n')
         f.write('\n')
 
         # Broken links
         f.write('Broken Links: (' + str(len(self.broken_urls)) + ' total)\n')
         for link in self.broken_urls:
-            f.write("    " + self.clean_url(link) + '\n')
+            f.write("    " + link + '\n')
         f.write('\n')
 
         # Term Frequency
@@ -163,12 +209,12 @@ class Crawler:
         f.close()
 
     def parse_robots(self):
-        self.parser.set_url(urljoin(ROOT_URL, 'robots.txt'))
+        self.parser.set_url(urlparse.urljoin(ROOT_URL, 'robots.txt'))
         self.parser.read()
 
     def check_duplicate_file(self, text):
         m = hashlib.md5()
-        m.update(text.encode('utf-8'))
+        m.update(text)
         md5_value = m.hexdigest()
         is_duplicate = md5_value in self.duplicate_md5_map
 
@@ -176,6 +222,13 @@ class Crawler:
             self.duplicate_md5_map[md5_value] = True
 
         return is_duplicate
+
+    def clean_urls(self):
+        self.visited_urls = set(self.add_root_to_links(self.visited_urls))
+        self.image_urls = self.add_root_to_links(self.image_urls)
+        self.excel_urls = self.add_root_to_links(self.excel_urls)
+        self.broken_urls = self.add_root_to_links(self.broken_urls)
+        self.external_urls = self.clean_external_links(self.external_urls)
 
     @staticmethod
     def strip_tags(html):
@@ -191,9 +244,12 @@ class Crawler:
     def clean_url(url):
         """
         This method removes the base url
+        EX. http://lyle.smu.edu/~fmoore/schedule.htm => schedule.htm
         """
 
-        return url.replace(ROOT_URL, '')
+        url = re.compile(ROOT_URL).sub('', url)
+        url = re.compile('http://lyle.smu.edu/~fmoore').sub('', url)
+        return re.compile('\.\./').sub('', url)
     
     @staticmethod
     def extract_urls(text):
@@ -213,17 +269,6 @@ class Crawler:
         return urls
 
     @staticmethod
-    def extract_title(text):
-        """
-        This method will take the contents of a page and extract the title from it
-        """
-        soup = BeautifulSoup(text, 'html.parser')
-        try:
-            return soup.title.string
-        except Exception as e:
-            return "No page title"
-
-    @staticmethod
     def image_link(url):
         """
         This method will check if the link is a JPEG
@@ -240,11 +285,19 @@ class Crawler:
         return r_image.match(url)
 
     @staticmethod
-    def add_root_to_link(url):
+    def excel_link(url):
         """
-        This method will add the root URL
+        This method will check if the link is an excel file.
         """
-        return ROOT_URL + re.compile('http://lyle.smu.edu/~fmoore/').sub('', url)
+        return True if re.compile('.*.xlsx').match(url) else False
+
+    @staticmethod
+    def add_root_to_links(urls):
+        """
+        This method will add the root URL to all of the links for visual apperance
+        """
+        new_urls = [ROOT_URL + re.compile('http://lyle.smu.edu/~fmoore/').sub('', link) for link in urls]
+        return new_urls
 
     @staticmethod
     def remove_extra_whitespace(text):
@@ -264,6 +317,14 @@ class Crawler:
         return ''.join(ch for ch in text if ch not in exclude)
 
     @staticmethod
+    def add_root_if_not_there(url):
+        """
+        This method will add the root url to a single link if it isnt there
+        """
+        url = re.compile('http://lyle.smu.edu/~fmoore/').sub('', url)
+        return ROOT_URL + url
+
+    @staticmethod
     def appears(i):
         """
         This method will return 1 if the frequency (i) is greater than 1. It is
@@ -275,8 +336,94 @@ class Crawler:
             return 0
 
     @staticmethod
+    def clean_external_links(external):
+        """
+        This method will remove the non links from the external links
+        """
+        urls = []
+        for link in external:
+            if link is None:
+                return urls
+            else:
+                urls.append(link)
+        return urls
+
+    @staticmethod
+    def normalize_vector(vector):
+        """
+        This method will normalize the vector to prep for calculate_cosine_similarity
+        """
+        if numpy.linalg.norm(vector) == 0.0:
+            return [0.0 for i in vector]
+        else:
+            return [i / numpy.linalg.norm(vector) for i in vector]
+
+    @staticmethod
+    def calculate_cosine_similarity(doc, query):
+        """
+        This method will calculate the cosine similarity between two vectors of equal size
+        """
+        if len(doc) != len(query):
+            return 0.0
+        return numpy.dot(doc, query)
+
+    @staticmethod
     def get_file_extension(url):
         return os.path.splitext(url)[1][1:]
+
+    def query_engine(self, N):
+        """
+        This method will be the main query handler.
+        self.all_words format (var info below): [('spring'), [('url', 3), ('other_page', 4)] ]
+                                                  word         tuples(url, frequency)
+        """
+        print "#################################################################"
+        print "#################################################################"
+        print "############### Preston and Arturo's Web Crawler ################"
+        print "#################################################################"
+        print "#################################################################"
+        print
+        print "Please enter a query to search the lyle.smu.edu/~fmoore domain."
+        print "Search will display top " + str(N) + " results or all results that query is found on."
+        print "Type 'quit' to exit the search engine"
+
+        while True:
+            user_input = raw_input("> ")
+            if user_input == "quit" or user_input == "Quit" or user_input == "QUIT":
+                break
+            query = self.p.stem_word(re.sub("[^\w]", " ",  user_input).split())
+            query = [word.lower() for word in query]
+            for word in query:
+                if word in self.stopwords:
+                    query.remove(word)
+            query_vector = [self.calculate_tfidf(word) for word in query]
+            docs = {}
+            for doc_name, ID in self.docs.iteritems():
+                vector = []
+                for word in query:
+                    if word in self.vocabulary:
+                        if self.doc_term_matrix[self.vocabulary.index(word)][self.docs[self.add_root_if_not_there(doc_name)]] >= 1:
+                            vector.append(1)
+                        else:
+                            vector.append(0)
+                docs[doc_name] = self.normalize_vector(vector)
+            rankings = {}
+            for url, doc_vec in docs.iteritems():
+                rankings[url] = self.calculate_cosine_similarity(doc_vec, query_vector)
+
+            sorted_rankings = sorted(rankings.items(), key=operator.itemgetter(1), reverse=True)
+            i = 0
+            if sorted_rankings[0][1] == 0.0:
+                print '%s not found in domain.\n' % user_input
+                continue
+            print '  Score:      Document:'
+            while i < N:
+                if sorted_rankings[i][1] == 0.0:
+                    break
+                print '   {0:4f}'.format(sorted_rankings[i][1]) + '    {}'.format(sorted_rankings[i][0])
+                i += 1
+            print
+        return
 
     def crawl(self, pages_to_index):
         """
@@ -290,46 +437,41 @@ class Crawler:
         self.parse_robots()
 
         # Add ROOT_URL url to queue
-        url_queue = [ROOT_URL + 'index.html']
+        urlqueue = [ROOT_URL + 'index.html']
 
         # pages indexed
         pages_indexed = 0
 
-        while url_queue:
-            # get last element in url_queue
-            url = url_queue.pop(-1)
+        while urlqueue:
+            # get last element in urlqueue
+            url = urlqueue.pop(-1)
 
             print "    " + self.clean_url(url),
 
-            if url in self.visited_urls:
-                print "... already visited"
+            if self.clean_url(url) in self.visited_urls:
+                print "... visited"
                 continue
 
+
             # check if we can fetch the page first
-            if self.parser.can_fetch('*', self.clean_url(url)) and self.parser.can_fetch('*', '/' + self.clean_url(url)):
+            if self.parser.can_fetch('*', urlparse.urljoin('/', url)):
+
+                # remove the / at the beginning of the string
+                url = re.compile('^/').sub('', url)
 
                 # fetch the page
                 page = self.fetch(url)
 
-                # fetch the page title
-                title = self.extract_title(page)
-
                 # add page to visited links
-                self.visited_urls.append(url)
-
-                # add page to visited items
-                self.visited_items.append({
-                    "link": url,
-                    "title": title
-                })
+                self.visited_urls.append(self.clean_url(url))
 
                 # docs and page id
-                self.docs[url] = pages_indexed
+                self.docs[self.add_root_if_not_there(url)] = pages_indexed
 
                 # Only parses html, htm, and txt extension files
                 file_extension = self.get_file_extension(url)
                 if file_extension in ['html', 'htm', 'txt']:
-                    page_text = requests.get(url)
+                    page_text = requests.get(ROOT_URL + self.clean_url(url))
                     page_text = page_text.text
 
                     # Check if duplicate file
@@ -353,25 +495,26 @@ class Crawler:
 
                 for new_url in new_urls:
                     # check if we have already visited it or are going to
-                    joined_url = urljoin(url, new_url)
-
-                    print "        " + self.clean_url(joined_url),
-                    if joined_url in self.visited_urls:
+                    print "        " + new_url,
+                    if new_url in self.visited_urls:
                         print "... visited"
-                    elif new_url not in url_queue and new_url not in self.image_urls \
+                    elif new_url not in urlqueue and new_url not in self.image_urls \
                             and new_url not in self.broken_urls and new_url not in self.external_urls:
-                        if self.external_link(joined_url):
+                        if self.external_link(new_url):
                             print "... external"
-                            self.external_urls.append(joined_url)
-                        elif self.image_link(joined_url):
+                            self.external_urls.append(new_url)
+                        elif self.image_link(new_url):
                             print "... image"
-                            self.image_urls.append(joined_url)
-                        elif self.broken_link(joined_url):
+                            self.image_urls.append(new_url)
+                        elif self.excel_link(new_url):
+                            print "... excel"
+                            self.excel_urls.append(new_url)
+                        elif self.broken_link(new_url):
                             print "... broken"
-                            self.broken_urls.append(joined_url)
-                        elif self.valid_link(joined_url):
+                            self.broken_urls.append(new_url)
+                        elif self.valid_link(new_url):
                             print "... new"
-                            url_queue.append(joined_url)
+                            urlqueue.append(new_url)
                         else:
                             print "... skipped"
                     else:
@@ -382,6 +525,9 @@ class Crawler:
 
             # end if
         # end while
+
+        # clean the links for visual appearance
+        self.clean_urls()
 
         # write to output file
         self.write_output()
@@ -403,3 +549,6 @@ if __name__ == "__main__":
         crawler.crawl(sys.argv[1])
     else:
         crawler.crawl(1000)
+
+    # Start query engine
+    # crawler.query_engine(5)

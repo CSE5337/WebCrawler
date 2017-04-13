@@ -1,27 +1,29 @@
 Output of Preston and Arturo's web crawler.
 
 Current Time: 
-    2017-03-21 18:03:47
+    2017-04-13 01:32:22
 
-Visited Links: (11 total)
-    http://lyle.smu.edu/~fmoore/index_duplicate.htm
-    http://lyle.smu.edu/~fmoore/misc/porter_stemmer_example.html
-    http://lyle.smu.edu/~fmoore/index.htm
-    http://lyle.smu.edu/~fmoore/misc/levenshtein.html
-    http://lyle.smu.edu/~fmoore/index.html
-    http://lyle.smu.edu/~fmoore/misc/urlexample1.htm
-    http://lyle.smu.edu/~fmoore/misc/exam1.html
-    http://lyle.smu.edu/~fmoore/misc/excel-examples.html
-    http://lyle.smu.edu/~fmoore/misc/count_letters_duplicate.txt
-    http://lyle.smu.edu/~fmoore/schedule.htm
-    http://lyle.smu.edu/~fmoore/misc/count_letters.txt
+Visited Links: (13 total)
+    index.html (Freeman Moore - SMU Spring 2017)
+    schedule.htm (SMU CSE 5337/7337 Spring 2017 Schedule)
+    misc/bayes.html (A simple naive bayes classifier implemented in javascript)
+    misc/useragent.html (CSE 5337/7337 User-Agent)
+    misc/excel-examples.html (CSE 5/7337 excel demo for March 21)
+    misc/exam1.html (CSE 7337 Spring 2017 distance students exam 1 location)
+    misc/urlexample1.htm (URL Example - relative vs absolute)
+    index.htm (Freeman Moore - SMU Spring 2017)
+    misc/porter_stemmer_example.html (Porter Stemmer Online)
+    misc/levenshtein.html (Levenshtein Distance demo)
+    misc/count_letters_duplicate.txt (No page title)
+    misc/count_letters.txt (No page title)
+    index_duplicate.htm (Freeman Moore - SMU Spring 2017)
 
 External Links: (12 total)
     mailto:fmoore@lyle.smu.edu
     https://smu.instructure.com
-    does_not_exist.htm
     http://www.gedpage.com/soundex.html
     http://www.smu.edu/EnrollmentServices/Registrar/Enrollment/FinalExamSchedule/Spring2017
+    http://lyle.smu.edu/~fmoore
     http://tartarus.org/~martin/PorterStemmer/
     http://en.wikipedia.org/wiki/Document_classification
     http://en.wikipedia.org/wiki/Stop_words
@@ -30,38 +32,37 @@ External Links: (12 total)
     http://search.carrot2.org/stable/search
     http://9ol.es/porter_js_demo.html
 
-Image Links: (4 total)
-    http://lyle.smu.edu/~fmoore/SMU-CSE-LOGO.gif
-    http://lyle.smu.edu/~fmoore/misc/google-and-or-example.jpg
-    http://lyle.smu.edu/~fmoore/misc/permutermindex-example.jpg
-    http://lyle.smu.edu/~fmoore/excel-icon.jpg
+Image Links: (7 total)
+    SMU-CSE-LOGO.gif
+    SMU-CSE-LOGO.gif
+    misc/google-and-or-example.jpg
+    misc/permutermindex-example.jpg
+    misc/roadmap-04-06-2017.jpg
+    misc/excel-icon.jpg
+    misc/excel-icon.jpg
 
-Excel Links: (3 total)
-    http://lyle.smu.edu/~fmoore/misc/example-2017-03-02.xlsx
-    http://lyle.smu.edu/~fmoore/page113.xlsx
-    http://lyle.smu.edu/~fmoore/page113-ex2.xlsx
-
-Broken Links: (1 total)
-    http://lyle.smu.edu/~fmoore/this_aint_gonna_work.htm
+Broken Links: (2 total)
+    does_not_exist.htm
+    this_aint_gonna_work.htm
 
 Top 20 Most Common Words with Document Frequency:
+    The term de occurs 24 times in 1 documents.
     The term 1 occurs 17 times in 4 documents.
+    The term un occurs 17 times in 1 documents.
     The term chpt occurs 14 times in 1 documents.
+    The term en occurs 13 times in 1 documents.
+    The term and occurs 13 times in 6 documents.
     The term exampl occurs 12 times in 4 documents.
-    The term and occurs 11 times in 5 documents.
     The term hmwk occurs 10 times in 1 documents.
+    The term ã occurs 10 times in 1 documents.
     The term 2 occurs 10 times in 3 documents.
+    The term le occurs 10 times in 1 documents.
+    The term la occurs 10 times in 1 documents.
     The term j occurs 10 times in 1 documents.
+    The term que occurs 9 times in 1 documents.
     The term stem occurs 9 times in 1 documents.
     The term 0 occurs 8 times in 2 documents.
+    The term alic occurs 8 times in 1 documents.
+    The term cse occurs 8 times in 5 documents.
     The term 2017 occurs 8 times in 4 documents.
-    The term cse occurs 7 times in 4 documents.
-    The term assign occurs 7 times in 1 documents.
-    The term distanc occurs 7 times in 3 documents.
-    The term due occurs 7 times in 1 documents.
-    The term var occurs 7 times in 2 documents.
-    The term file occurs 7 times in 3 documents.
-    The term 3 occurs 6 times in 3 documents.
-    The term 4 occurs 6 times in 2 documents.
-    The term spring occurs 6 times in 3 documents.
-    The term mai occurs 5 times in 2 documents.
+    The term el occurs 8 times in 1 documents.

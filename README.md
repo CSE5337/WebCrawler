@@ -6,11 +6,7 @@ This project has been developed on a mid-2010 Macbook Pro running OS X El Capita
 
 
 ## Installation
-You can clone this repository to gain access to the code of the project.
-
-```
-git clone https://github.com/CSE5337/WebCrawler.git
-```
+Install all the dependencies and run the execution line
 
 ## Execution
 ```
@@ -22,3 +18,15 @@ git clone https://github.com/CSE5337/WebCrawler.git
 * Python 2.7
 
 * Python packages: numpy, HTMLParser, requests, BeautifulSoup, PorterStemmer
+
+## Files
+
+* output.txt: Program results
+* program_log.pdf: Program logging
+* project1.doc: Project questions
+
+* crawler.py: Program
+
+* stopwords.txt: List of stop words
+* stemmer.py: Porter stemmer library
+* term_document_frequency_matrix.txt: Visual representation of the term document frequency matrix
