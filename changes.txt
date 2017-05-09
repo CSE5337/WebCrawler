@@ -1,1 +1,7 @@
-dynamic doc_matrix
+politeness & word definition change
+
+queries:
+all course information
+spring 2017
+spring break
+vector

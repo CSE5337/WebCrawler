@@ -1,15 +1,23 @@
 Output of Preston and Arturo's web crawler.
 
 Current Time: 
-    2017-05-09 01:46:22
+    2017-05-09 04:42:09
 
-Visited Links: (16 total)
+Visited urls: (24 total)
     index.html (Freeman Moore - SMU Spring 2017)
     schedule.htm (SMU CSE 5337/7337 Spring 2017 Schedule)
+    signup.php (SMU CSE 5337/7337 Demo sign up)
     misc/bayes-poem.html (A simple naive bayes classifier implemented in javascript)
     misc/bayes.html (A simple naive bayes classifier implemented in javascript)
     misc/good_bad_page.htm (Good looking - but bad technique)
     misc/seo_email.txt (No page title)
+    misc/text/index.php (Excerpts from "To Kill a Mockingbird")
+    misc/text/magictext.html (This is the magic file)
+    misc/text/mockingbird5.html (Mockingbird part 5)
+    misc/text/mockingbird4.html (Mockingbird part 4)
+    misc/text/mockingbird3.html (Mockingbird part 3)
+    misc/text/mockingbird2.html (Mockingbird part 2)
+    misc/text/mockingbird1.html (Mockingbird novel part 1)
     misc/useragent.html (CSE 5337/7337 User-Agent)
     misc/excel-examples.html (CSE 5/7337 excel demo for March 21)
     misc/exam1.html (CSE 7337 Spring 2017 distance students exam 1 location)
@@ -21,7 +29,7 @@ Visited Links: (16 total)
     misc/count_letters.txt (No page title)
     index_duplicate.htm (Freeman Moore - SMU Spring 2017)
 
-External Links: (13 total)
+External urls: (13 total)
     mailto:fmoore@lyle.smu.edu
     https://smu.instructure.com
     http://www.gedpage.com/soundex.html
@@ -36,7 +44,7 @@ External Links: (13 total)
     http://search.carrot2.org/stable/search
     http://9ol.es/porter_js_demo.html
 
-Image Links: (7 total)
+Image urls: (7 total)
     SMU-CSE-LOGO.gif
     SMU-CSE-LOGO.gif
     misc/google-and-or-example.jpg
@@ -45,28 +53,30 @@ Image Links: (7 total)
     misc/excel-icon.jpg
     misc/excel-icon.jpg
 
-Broken Links: (2 total)
+Broken urls: (2 total)
     does_not_exist.htm
     this_aint_gonna_work.htm
 
+Total words in dictionary: 1421
+
 Top 20 Most Common Stemmed Words with Document Frequency:
-    The term and occurs 34 times in 8 documents.
+    The term and occurs 77 times in 15 documents.
+    The term mai occurs 30 times in 5 documents.
+    The term 9 occurs 27 times in 3 documents.
     The term de occurs 24 times in 1 documents.
-    The term 1 occurs 18 times in 5 documents.
+    The term pm occurs 22 times in 2 documents.
+    The term 1 occurs 21 times in 7 documents.
+    The term scout occurs 21 times in 5 documents.
+    The term her occurs 20 times in 6 documents.
+    The term jem occurs 19 times in 5 documents.
     The term un occurs 17 times in 1 documents.
+    The term atticu occurs 16 times in 4 documents.
+    The term part occurs 15 times in 6 documents.
+    The term 2 occurs 14 times in 6 documents.
     The term chpt occurs 14 times in 1 documents.
     The term en occurs 13 times in 1 documents.
+    The term mockingbird occurs 13 times in 7 documents.
+    The term you occurs 12 times in 7 documents.
     The term exampl occurs 12 times in 4 documents.
-    The term 2 occurs 11 times in 4 documents.
-    The term you occurs 11 times in 6 documents.
-    The term hmwk occurs 10 times in 1 documents.
-    The term teach occurs 10 times in 2 documents.
-    The term ã occurs 10 times in 1 documents.
-    The term le occurs 10 times in 1 documents.
-    The term la occurs 10 times in 1 documents.
-    The term if occurs 10 times in 5 documents.
-    The term j occurs 10 times in 1 documents.
-    The term can occurs 9 times in 3 documents.
-    The term 2017 occurs 9 times in 5 documents.
-    The term que occurs 9 times in 1 documents.
-    The term stem occurs 9 times in 1 documents.
+    The term tom occurs 11 times in 3 documents.
+    The term if occurs 11 times in 6 documents.
