@@ -1,11 +1,13 @@
-import requests, robotparser, re, os, string, sys
+import requests, robotparser, urlparse, re, os, string, sys, operator, numpy
 from bs4 import BeautifulSoup
 from HTMLParser import HTMLParser
 from time import localtime, strftime
 from stemmer import PorterStemmer
 from collections import Counter
+from math import log10
 import hashlib
 from urlparse import urljoin
+
 
 ROOT_URL = 'http://lyle.smu.edu/~fmoore/'
 
@@ -13,6 +15,7 @@ ROOT_URL = 'http://lyle.smu.edu/~fmoore/'
 class MLStripper(HTMLParser):
     """
     This class removes the HTML tags from raw HTML text.
+    http://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
     """
     def __init__(self):
         HTMLParser.__init__(self)
@@ -33,8 +36,8 @@ class Crawler:
         self.all_words = {}
         self.all_words_freq = {}
         self.vocabulary = []
-        self.doc_term_matrix = [[0] * 23 for n in range(809)]
-        self.docs = {}
+        self.doc_term_matrix = [[0] * 30 for n in range(2000)]
+        self.docs = []
         self.parser = robotparser.RobotFileParser()
 
         self.visited_urls = []
@@ -95,15 +98,60 @@ class Crawler:
                 self.all_words[key] = [(url, doc_words[key])]
                 self.all_words_freq[key] = [1, doc_words[key]]
                 self.vocabulary.append(key)
-                self.doc_term_matrix[self.vocabulary.index(key)][self.docs[url]] = \
-                    self.all_words[key][0][1]
+                self.doc_term_matrix[self.vocabulary.index(key)][self.docs.index(url)] = self.all_words[key][0][1]
             else:
                 self.all_words[key].append((url, doc_words[key]))
                 self.all_words_freq[key][0] += 1
                 self.all_words_freq[key][1] += doc_words[key]
                 for tup in self.all_words[key]:
+                    # check if right URL
                     if tup[0] == str(url):
-                        self.doc_term_matrix[self.vocabulary.index(key)][self.docs[url]] = tup[1]
+                        self.doc_term_matrix[self.vocabulary.index(key)][self.docs.index(url)] = tup[1]
+
+    def doc_query_tfidf(self, words):
+        """
+        tfidf:
+        1 + log(number of times word appears in a document) * log(total documents/ how many documents the word appears in)
+        """
+
+        # term on row, document on column
+        tfidf_matrix = []
+        total_docs = len(self.docs)
+        for word in words:
+            row = []
+            for url in self.docs:
+                tfidf = 0
+                for all_word in self.all_words[word]:
+                    if url == all_word[0]:
+                        try:
+                            tfidf = (1 + log10(all_word[1])) * log10(total_docs / self.all_words_freq[word][0])
+                            break
+                        except ZeroDivisionError:
+                            pass
+                row.append(tfidf)
+            tfidf_matrix.append(row)
+
+        return tfidf_matrix
+    def query_tfidf(self, words):
+        """
+        tfidf:
+        1 + log(number of times word appears in the query) * log(total documents/ how many documents the word appears in)
+        """
+
+        tfidf_matrix = []
+        total_docs = len(self.docs)
+        term_frequency = Counter(words)
+        terms_in_docs = len(term_frequency)
+
+        for word in words:
+            tfidf = 0
+            try:
+                tfidf = (1 + log10(float(term_frequency[word])/float(terms_in_docs))) * log10(float(total_docs) / float(self.all_words_freq[word][0]))
+            except ZeroDivisionError, e:
+                test = 2
+            tfidf_matrix.append(tfidf)
+
+        return tfidf_matrix
 
     def write_output(self):
         """
@@ -152,13 +200,13 @@ class Crawler:
         f.write('Current Time: ')
         f.write(strftime("%Y-%m-%d %H:%M:%S", localtime()))
         f.write('\n\n               ')  # 15 spaces
-        for key, val in self.docs.iteritems():
-            f.write('{0:60}'.format(key))
+        for url in self.docs:
+            f.write('{0:100}'.format(url))
         f.write('\n')
-        for i in range(0,len(self.vocabulary)):
-            f.write('{0:15}'.format(self.vocabulary[i]))
-            for j in range(0,23):
-                f.write('{}'.format(self.appears(self.doc_term_matrix[i][j])).ljust(60))
+        for i in range(0, len(self.vocabulary)):
+            f.write('{0:30}'.format(self.vocabulary[i]))
+            for j in range(0, 30):
+                f.write('{}'.format(self.appears(self.doc_term_matrix[i][j])).ljust(100))
             f.write('\n')
         f.close()
 
@@ -275,8 +323,82 @@ class Crawler:
             return 0
 
     @staticmethod
+    def normalize_vector(vector):
+        """
+        This method will normalize the vector to prep for calculate_cosine_similarity
+        """
+        if numpy.linalg.norm(vector) == 0.0:
+            return [0.0 for i in vector]
+        else:
+            return [i / numpy.linalg.norm(vector) for i in vector]
+
+    def calculate_cosine_similarity(self, user_input):
+
+        query_words = self.prepare_text(user_input)
+        doc_query_tfidf = numpy.array(self.doc_query_tfidf(query_words))
+        query_tfidf = numpy.array(self.query_tfidf(query_words))
+
+        cos_sims = []
+        for index, url in enumerate(self.docs):
+            dot_product = numpy.dot(doc_query_tfidf[:, index], query_tfidf)
+
+            doc_norm = numpy.linalg.norm(doc_query_tfidf[:, index])
+            query_norm = numpy.linalg.norm(query_tfidf)
+
+            cos_sim = dot_product / (doc_norm * query_norm)
+            cos_sim = 0 if numpy.isnan(cos_sim) else cos_sim
+
+            visited_item = (item for item in self.visited_items if item["link"] == url).next()
+
+            cos_sims.append({
+                "cos_sim": cos_sim,
+                "visited_item": visited_item
+            })
+
+
+        sorted_rankings = sorted(cos_sims, key=lambda k: k['cos_sim'], reverse=True)
+
+        return sorted_rankings
+
+    @staticmethod
     def get_file_extension(url):
         return os.path.splitext(url)[1][1:]
+
+    def query_engine(self, N):
+        """
+        This method will be the main query handler.
+        self.all_words format (var info below): [('spring'), [('url', 3), ('other_page', 4)] ]
+                                                  word         tuples(url, frequency)
+        """
+        print "#################################################################"
+        print "#################################################################"
+        print "############### Preston and Arturo's Web Crawler ################"
+        print "#################################################################"
+        print "#################################################################"
+        print
+        print "Please enter a query to search the lyle.smu.edu/~fmoore domain."
+        print "Search will display top " + str(N) + " results or all results that query is found on."
+        print "Type 'quit' to exit the search engine"
+
+        while True:
+            user_input = raw_input("> ")
+            if user_input == "quit" or user_input == "Quit" or user_input == "QUIT":
+                break
+
+            rankings = self.calculate_cosine_similarity(user_input)
+
+            i = 0
+            if rankings[0][1] == 0.0:
+                print '%s not found in domain.\n' % user_input
+                continue
+            print '  Score:      Document:'
+            while i < N:
+                if rankings[i][1] == 0.0:
+                    break
+                print '   {0:4f}'.format(rankings[i][1]) + '    {}'.format(rankings[i][0])
+                i += 1
+            print
+        return
 
     def crawl(self, pages_to_index):
         """
@@ -292,8 +414,7 @@ class Crawler:
         # Add ROOT_URL url to queue
         url_queue = [ROOT_URL + 'index.html']
 
-        # pages indexed
-        pages_indexed = 0
+        current_page_index = 0
 
         while url_queue:
             # get last element in url_queue
@@ -323,8 +444,6 @@ class Crawler:
                     "title": title
                 })
 
-                # docs and page id
-                self.docs[url] = pages_indexed
 
                 # Only parses html, htm, and txt extension files
                 file_extension = self.get_file_extension(url)
@@ -337,13 +456,15 @@ class Crawler:
                         print "... duplicate"
                         continue
 
+                    self.docs.append(url)
                     clean_text = self.prepare_text(page_text)
                     doc_words = Counter(clean_text)
                     self.index(url, doc_words)
                     print "... indexed"
                     # increment the pages indexed
-                    pages_indexed += 1
-                    if int(pages_indexed) >= int(pages_to_index):
+                    current_page_index += 1
+
+                    if int(current_page_index) >= int(pages_to_index):
                         break
                 else:
                     print "... skipped"
@@ -403,3 +524,7 @@ if __name__ == "__main__":
         crawler.crawl(sys.argv[1])
     else:
         crawler.crawl(1000)
+
+    test = 2
+    # Start query engine
+    crawler.query_engine(5)

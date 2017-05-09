@@ -1,12 +1,15 @@
 Output of Preston and Arturo's web crawler.
 
 Current Time: 
-    2017-04-13 01:40:35
+    2017-05-09 01:46:22
 
-Visited Links: (13 total)
+Visited Links: (16 total)
     index.html (Freeman Moore - SMU Spring 2017)
     schedule.htm (SMU CSE 5337/7337 Spring 2017 Schedule)
+    misc/bayes-poem.html (A simple naive bayes classifier implemented in javascript)
     misc/bayes.html (A simple naive bayes classifier implemented in javascript)
+    misc/good_bad_page.htm (Good looking - but bad technique)
+    misc/seo_email.txt (No page title)
     misc/useragent.html (CSE 5337/7337 User-Agent)
     misc/excel-examples.html (CSE 5/7337 excel demo for March 21)
     misc/exam1.html (CSE 7337 Spring 2017 distance students exam 1 location)
@@ -18,10 +21,11 @@ Visited Links: (13 total)
     misc/count_letters.txt (No page title)
     index_duplicate.htm (Freeman Moore - SMU Spring 2017)
 
-External Links: (12 total)
+External Links: (13 total)
     mailto:fmoore@lyle.smu.edu
     https://smu.instructure.com
     http://www.gedpage.com/soundex.html
+    http://www.wessa.net/rwasp_hierarchicalclustering.wasp
     http://www.smu.edu/EnrollmentServices/Registrar/Enrollment/FinalExamSchedule/Spring2017
     http://lyle.smu.edu/~fmoore
     http://tartarus.org/~martin/PorterStemmer/
@@ -46,23 +50,23 @@ Broken Links: (2 total)
     this_aint_gonna_work.htm
 
 Top 20 Most Common Stemmed Words with Document Frequency:
+    The term and occurs 34 times in 8 documents.
     The term de occurs 24 times in 1 documents.
-    The term 1 occurs 17 times in 4 documents.
+    The term 1 occurs 18 times in 5 documents.
     The term un occurs 17 times in 1 documents.
     The term chpt occurs 14 times in 1 documents.
     The term en occurs 13 times in 1 documents.
-    The term and occurs 13 times in 6 documents.
     The term exampl occurs 12 times in 4 documents.
+    The term 2 occurs 11 times in 4 documents.
+    The term you occurs 11 times in 6 documents.
     The term hmwk occurs 10 times in 1 documents.
+    The term teach occurs 10 times in 2 documents.
     The term ã occurs 10 times in 1 documents.
-    The term 2 occurs 10 times in 3 documents.
     The term le occurs 10 times in 1 documents.
     The term la occurs 10 times in 1 documents.
+    The term if occurs 10 times in 5 documents.
     The term j occurs 10 times in 1 documents.
+    The term can occurs 9 times in 3 documents.
+    The term 2017 occurs 9 times in 5 documents.
     The term que occurs 9 times in 1 documents.
     The term stem occurs 9 times in 1 documents.
-    The term 0 occurs 8 times in 2 documents.
-    The term alic occurs 8 times in 1 documents.
-    The term cse occurs 8 times in 5 documents.
-    The term 2017 occurs 8 times in 4 documents.
-    The term el occurs 8 times in 1 documents.

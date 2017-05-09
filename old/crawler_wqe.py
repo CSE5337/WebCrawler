@@ -6,6 +6,7 @@ from stemmer import PorterStemmer
 from collections import Counter
 from math import log10
 import hashlib
+from urlparse import urljoin
 
 ROOT_URL = 'http://lyle.smu.edu/~fmoore/'
 
