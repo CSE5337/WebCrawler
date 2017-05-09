@@ -21,9 +21,12 @@ Install all the dependencies and run the execution line
 
 ## Files
 
+* demo.mov: demo of everything
 * output.txt: Program results
 * program_log.pdf: Program logging
-* project1.doc: Project questions
+* project1.doc: Project 1 questions
+* project2.doc: Project 2 questions
+* queries.txt: queries ran during the demo
 
 * crawler.py: Program
 

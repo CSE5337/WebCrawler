@@ -1,7 +1,7 @@
 Output of Preston and Arturo's web crawler.
 
 Current Time: 
-    2017-05-09 04:42:09
+    2017-05-09 05:13:05
 
 Visited urls: (24 total)
     index.html (Freeman Moore - SMU Spring 2017)

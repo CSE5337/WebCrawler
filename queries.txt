@@ -1,0 +1,18 @@
+Base queries:
+moore smu
+Bob Ewell where Scout
+three year story
+Atticus to defend Maycomb
+hocuspocus thisworks
+
+Stop words:
+the
+
+0.5 added to query score:
+spring
+
+Random queries:
+all course information
+spring break
+smu
+vector

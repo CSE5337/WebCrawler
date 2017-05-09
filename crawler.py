@@ -7,6 +7,7 @@ from collections import Counter
 from math import log10
 import hashlib
 from urlparse import urljoin
+import time
 
 
 ROOT_URL = 'http://lyle.smu.edu/~fmoore/'
@@ -45,6 +46,7 @@ class Crawler:
         self.image_urls = []
         self.broken_urls = []
         self.duplicate_md5_map = {}
+        self.wait_time = 0.2
         self.thesaurus = {
             "beautiful": ["nice", "fancy"],
             "chapter": ["chpt"],
@@ -79,6 +81,9 @@ class Crawler:
         """
         This method will check if the url is broken.
         """
+        # slow down the speed of requests
+        time.sleep(self.wait_time)
+
         return False if requests.get(url).status_code == 200 else True
 
     def load_stop_words(self, file_name):
@@ -421,21 +426,25 @@ class Crawler:
 
         while True:
             user_input = raw_input("> ")
-            if user_input == "quit" or user_input == "Quit" or user_input == "QUIT":
+            if user_input.lower() == "quit" or user_input.lower() == "stop":
                 break
 
             rankings = self.calculate_rankings(user_input, N)
 
             if rankings == None:
                 print 'Only disallowed words were searched upon. Please add more words to your query.'
+                continue
 
             if rankings[0]['cos_sim'] == 0:
                 print '%s not found in domain.\n' % user_input
                 continue
             print 'Score | url (title) | first 20 words'
-            for ranking in rankings:
+            for index, ranking in enumerate(rankings):
                 if ranking['cos_sim'] == 0:
                     break
+                if index >= N:
+                    break
+
                 print '   {0:4f}'.format(ranking['cos_sim']) + ' | ' + ranking['visited_item']['url'] + ' (' + ranking['visited_item']['title'] + ') | ' + ' '.join(ranking['visited_item']['first_20_words']).decode('utf-8')
             print
         return
@@ -457,6 +466,9 @@ class Crawler:
         current_page_index = 0
 
         while url_queue:
+            # slow down the speed of requests
+            time.sleep(self.wait_time)
+
             # get last element in url_queue
             url = url_queue.pop(-1)
 
@@ -488,6 +500,7 @@ class Crawler:
                 # Only parses html, htm, and txt extension files
                 file_extension = self.get_file_extension(url)
                 if file_extension in ['html', 'htm', 'txt', 'php']:
+
                     page_text = requests.get(url)
                     page_text = page_text.text
 
